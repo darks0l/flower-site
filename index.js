@@ -1,172 +1,53 @@
-const markets = [
-  {
-    category: "Climate",
-    volume: "$182K volume",
-    question: "Will NYC record its hottest September on record?",
-    chance: 64,
-    yes: 64,
-    no: 36,
-    trend: [24, 31, 28, 38, 42, 47, 41, 53, 51, 58],
-  },
-  {
-    category: "Technology",
-    volume: "$96K volume",
-    question: "Will a frontier AI model ship before Q4 ends?",
-    chance: 57,
-    yes: 57,
-    no: 43,
-    trend: [19, 22, 26, 30, 35, 33, 39, 46, 52, 57],
-  },
-  {
-    category: "Culture",
-    volume: "$74K volume",
-    question: "Will a creator token break into mainstream finance coverage this month?",
-    chance: 41,
-    yes: 41,
-    no: 59,
-    trend: [12, 18, 26, 29, 34, 38, 31, 35, 40, 41],
-  },
-];
-
-const pillars = [
-  {
-    title: "Bloom-driven markets",
-    copy:
-      "Fresh markets open around culture, tech, climate, and crypto narratives that actually move attention.",
-  },
-  {
-    title: "Readable probability",
-    copy:
-      "Every card is designed to feel intuitive on mobile: one question, one trend, two outcomes, no clutter.",
-  },
-  {
-    title: "Soft conviction",
-    copy:
-      "flowers is serious about prediction design without looking like a hard-edged exchange terminal.",
-  },
-];
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function trendPath(points) {
-  const width = 320;
-  const height = 110;
-  const max = 100;
-
-  return points
-    .map((point, index) => {
-      const x = (index / (points.length - 1)) * width;
-      const y = height - (point / max) * height;
-      return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
-    })
-    .join(" ");
-}
-
-function renderMarket(market) {
-  const last = market.trend[market.trend.length - 1];
-
-  return `
-    <article class="market-card">
-      <div class="market-top">
-        <div class="meta-left">
-          <span class="tiny-icon">${market.category.slice(0, 1)}</span>
-          <span>${escapeHtml(market.category)}</span>
-        </div>
-        <span>${escapeHtml(market.volume)}</span>
-      </div>
-      <h3>${escapeHtml(market.question)}</h3>
-      <div class="chance-row">
-        <strong>${market.chance}%</strong>
-        <span>current illustrative chance</span>
-      </div>
-      <div class="chart-shell">
-        <svg viewBox="0 0 320 110" class="chart" role="img" aria-label="${escapeHtml(market.question)} trend line">
-          <path class="grid-line" d="M 0 92 L 320 92"></path>
-          <path class="trend-line" d="${trendPath(market.trend)}"></path>
-          <circle class="trend-dot" cx="320" cy="${(110 - (last / 100) * 110).toFixed(2)}" r="6"></circle>
-        </svg>
-        <div class="chart-foot">
-          <span>10-point illustrative trend</span>
-          <span>latest ${market.chance}%</span>
-        </div>
-      </div>
-      <div class="outcomes">
-        <button class="outcome yes" type="button">
-          <span>Yes</span>
-          <strong>${market.yes}c</strong>
-        </button>
-        <button class="outcome no" type="button">
-          <span>No</span>
-          <strong>${market.no}c</strong>
-        </button>
-      </div>
-    </article>
-  `;
-}
-
-function renderPillar(pillar) {
-  return `
-    <article class="pillar">
-      <h3>${escapeHtml(pillar.title)}</h3>
-      <p>${escapeHtml(pillar.copy)}</p>
-    </article>
-  `;
-}
-
-function page(url) {
-  return `<!doctype html>
+const page = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>flowers | prediction market</title>
+    <title>flower | prediction market</title>
     <meta
       name="description"
-      content="flowers is a soft-glass prediction market brand for culture, climate, technology, and crypto narratives."
+      content="flower is a mobile-first prediction market brand with soft-glass design, category worlds, and Privy-ready onboarding."
     />
-    <meta property="og:title" content="flowers | prediction market" />
-    <meta property="og:description" content="A mobile-first prediction market with soft bloom lighting and readable market cards." />
+    <meta property="og:title" content="flower | prediction market" />
+    <meta
+      property="og:description"
+      content="A bloom-lit prediction market shell with category worlds, clean onboarding, and no terminal ugliness."
+    />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="${escapeHtml(url)}" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="flowers | prediction market" />
-    <meta name="twitter:description" content="A mobile-first prediction market with soft bloom lighting and readable market cards." />
-    <link rel="canonical" href="${escapeHtml(url)}" />
+    <meta name="twitter:title" content="flower | prediction market" />
+    <meta
+      name="twitter:description"
+      content="A bloom-lit prediction market shell with category worlds, clean onboarding, and no terminal ugliness."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #041d2c;
-        --bg-2: #072537;
-        --panel: rgba(5, 20, 33, 0.76);
-        --panel-2: rgba(8, 31, 45, 0.88);
-        --line: rgba(121, 163, 188, 0.18);
-        --text: #f3f6fb;
-        --muted: rgba(218, 228, 239, 0.68);
-        --muted-2: rgba(196, 214, 226, 0.52);
-        --aqua: #64d6ef;
-        --aqua-2: #59c5db;
-        --coral: #ff7f76;
-        --violet: #1a1636;
-        --button: rgba(255, 255, 255, 0.035);
-        --shadow: rgba(0, 0, 0, 0.28);
+        --bg: #06121f;
+        --bg-2: #0a1c2e;
+        --panel: rgba(7, 16, 30, 0.8);
+        --panel-2: rgba(10, 22, 38, 0.92);
+        --line: rgba(161, 198, 223, 0.12);
+        --text: #f6f8fc;
+        --muted: rgba(221, 229, 239, 0.72);
+        --muted-2: rgba(188, 205, 220, 0.54);
+        --teal: #8de7d9;
+        --teal-2: #58d3c5;
+        --rose: #ff8e97;
+        --gold: #ffd887;
+        --ink: #0b1728;
+        --shadow: rgba(0, 0, 0, 0.32);
       }
 
       * { box-sizing: border-box; }
 
       html {
-        background: linear-gradient(180deg, #041b29 0%, #08263a 100%);
+        background: linear-gradient(180deg, #05111d 0%, #081a2b 100%);
         scroll-behavior: smooth;
       }
 
@@ -176,9 +57,10 @@ function page(url) {
         color: var(--text);
         font-family: "Manrope", system-ui, sans-serif;
         background:
-          radial-gradient(circle at 20% 10%, rgba(70, 144, 180, 0.16), transparent 24rem),
-          radial-gradient(circle at 82% 24%, rgba(86, 220, 219, 0.16), transparent 18rem),
-          linear-gradient(180deg, #051a29 0%, #072335 48%, #041d2c 100%);
+          radial-gradient(circle at 16% 12%, rgba(110, 196, 165, 0.16), transparent 26rem),
+          radial-gradient(circle at 82% 18%, rgba(103, 171, 255, 0.12), transparent 24rem),
+          radial-gradient(circle at 70% 72%, rgba(255, 152, 163, 0.12), transparent 20rem),
+          linear-gradient(180deg, #05111d 0%, #08192a 54%, #071522 100%);
       }
 
       body::before {
@@ -186,11 +68,12 @@ function page(url) {
         position: fixed;
         inset: 0;
         pointer-events: none;
-        background:
-          radial-gradient(circle at 74% 34%, rgba(78, 214, 221, 0.18), transparent 18rem),
-          radial-gradient(circle at 88% 58%, rgba(78, 214, 221, 0.12), transparent 20rem);
-        filter: blur(20px);
-        opacity: 0.9;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 36px 36px;
+        mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+        opacity: 0.22;
       }
 
       a {
@@ -204,68 +87,39 @@ function page(url) {
 
       .page {
         position: relative;
-        width: min(1180px, calc(100% - 28px));
+        width: min(1240px, calc(100% - 28px));
         margin: 0 auto;
-        padding: 18px 0 64px;
+        padding: 20px 0 72px;
       }
 
-      .mobile-frame {
-        position: relative;
-        max-width: 620px;
-        margin: 0 auto;
-      }
-
-      .hero-copy {
-        margin: 0 0 18px;
-        padding: 8px 6px 0;
-      }
-
-      .hero-copy h1 {
-        margin: 0;
-        font-family: "Geist", system-ui, sans-serif;
-        font-size: clamp(3rem, 9vw, 5.5rem);
-        line-height: 0.92;
-        letter-spacing: -0.06em;
-        font-weight: 600;
-      }
-
-      .hero-copy p {
-        margin: 14px 0 0;
-        color: var(--muted);
-        font-size: 1rem;
-        line-height: 1.65;
-        max-width: 32rem;
-      }
-
-      .browser-pill {
+      .topbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 14px;
-        padding: 16px 18px;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 28px;
-        background: rgba(255,255,255,0.04);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-        backdrop-filter: blur(14px);
+        gap: 16px;
         margin-bottom: 18px;
+        padding: 12px 14px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 26px;
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(16px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
       }
 
-      .brandbar {
+      .brand-left,
+      .nav,
+      .status-chip,
+      .auth-row,
+      .statline,
+      .cluster-top,
+      .chip-row,
+      .section-head,
+      .panel-foot {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 14px 16px;
-        border-radius: 26px;
-        border: 1px solid rgba(255,255,255,0.08);
-        background: linear-gradient(180deg, rgba(14, 16, 42, 0.84), rgba(10, 16, 31, 0.92));
-        box-shadow: 0 18px 40px var(--shadow);
       }
 
       .brand-left {
-        display: flex;
-        align-items: center;
         gap: 12px;
       }
 
@@ -280,7 +134,7 @@ function page(url) {
         width: 12px;
         height: 12px;
         border-radius: 999px;
-        background: #f2f5fb;
+        background: #f8fbff;
       }
 
       .petal.one { top: 0; left: 7px; }
@@ -292,401 +146,685 @@ function page(url) {
         height: 6px;
         top: 10px;
         left: 10px;
-        background: var(--coral);
+        background: var(--rose);
+      }
+
+      .brand-name,
+      h1,
+      h2,
+      h3,
+      .big-number,
+      .browser-pill {
+        font-family: "Instrument Sans", system-ui, sans-serif;
       }
 
       .brand-name {
-        font-family: "Geist", system-ui, sans-serif;
-        font-size: 2rem;
-        line-height: 1;
+        font-size: 1.65rem;
         font-weight: 700;
         letter-spacing: -0.06em;
       }
 
-      .menu-button {
-        width: 54px;
-        height: 54px;
-        border: 0;
-        border-radius: 18px;
-        color: var(--text);
-        background: rgba(255,255,255,0.05);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      .nav {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
-      .menu-button span,
-      .menu-button span::before,
-      .menu-button span::after {
-        display: block;
-        width: 18px;
-        height: 2px;
-        margin: 0 auto;
+      .nav a,
+      .status-chip,
+      .mini-chip,
+      .cluster-status,
+      .beta-pill {
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+      }
+
+      .nav a,
+      .status-chip {
+        min-height: 42px;
+        padding: 0 14px;
         border-radius: 999px;
-        background: currentColor;
-        content: "";
+        color: var(--muted);
       }
 
-      .menu-button span::before { transform: translateY(-6px); }
-      .menu-button span::after { transform: translateY(4px); }
+      .status-chip {
+        gap: 10px;
+        justify-content: center;
+      }
 
-      .markets {
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--teal);
+        box-shadow: 0 0 16px rgba(141, 231, 217, 0.85);
+      }
+
+      .layout {
         display: grid;
-        gap: 16px;
-        margin-top: 16px;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        gap: 18px;
       }
 
-      .market-card {
+      .hero,
+      .panel,
+      .cluster,
+      .onboard-card {
         position: relative;
         overflow: hidden;
-        padding: 18px 18px 18px;
-        border-radius: 34px;
         border: 1px solid var(--line);
-        background:
-          radial-gradient(circle at 82% 78%, rgba(77, 222, 219, 0.15), transparent 9rem),
-          linear-gradient(180deg, rgba(6, 24, 36, 0.94), rgba(8, 26, 39, 0.9));
-        box-shadow: 0 22px 48px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.05);
+        border-radius: 34px;
+        background: linear-gradient(180deg, rgba(7, 16, 30, 0.92), rgba(8, 20, 34, 0.86));
+        box-shadow: 0 28px 64px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.05);
       }
 
-      .market-card::after {
+      .hero {
+        padding: 28px;
+        min-height: 420px;
+        background:
+          radial-gradient(circle at 76% 20%, rgba(111, 224, 207, 0.18), transparent 16rem),
+          radial-gradient(circle at 80% 74%, rgba(252, 142, 158, 0.12), transparent 15rem),
+          linear-gradient(180deg, rgba(8, 18, 33, 0.96), rgba(7, 17, 29, 0.9));
+      }
+
+      .hero::after,
+      .panel::after,
+      .cluster::after,
+      .onboard-card::after {
         content: "";
         position: absolute;
-        width: 220px;
-        height: 220px;
-        right: -60px;
-        bottom: -80px;
+        inset: auto -80px -100px auto;
+        width: 240px;
+        height: 240px;
         border-radius: 999px;
-        border: 1px solid rgba(154, 223, 236, 0.1);
-        opacity: 0.65;
+        border: 1px solid rgba(255,255,255,0.06);
+        opacity: 0.7;
       }
 
-      .market-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        color: var(--muted-2);
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.75rem;
-      }
-
-      .meta-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .tiny-icon {
+      .browser-pill {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        width: 20px;
-        height: 20px;
-        border-radius: 999px;
-        border: 1px solid rgba(255,255,255,0.08);
-        font-size: 0.7rem;
-      }
-
-      .market-card h3 {
-        margin: 28px 0 24px;
-        font-family: "Geist", system-ui, sans-serif;
-        font-size: clamp(2rem, 6vw, 3.2rem);
-        line-height: 1.08;
-        letter-spacing: -0.05em;
-        font-weight: 500;
-        max-width: 13ch;
-      }
-
-      .chance-row {
-        display: flex;
-        align-items: baseline;
         gap: 10px;
-        margin-bottom: 14px;
+        min-height: 44px;
+        padding: 0 16px;
+        border-radius: 999px;
+        color: var(--muted);
+        letter-spacing: -0.03em;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
       }
 
-      .chance-row strong {
-        font-family: "Geist", system-ui, sans-serif;
-        font-size: clamp(4rem, 10vw, 5rem);
+      h1 {
+        margin: 18px 0 16px;
+        max-width: 11ch;
+        font-size: clamp(3.4rem, 8vw, 6.4rem);
         line-height: 0.9;
         letter-spacing: -0.08em;
         font-weight: 700;
-        color: #dffaf8;
       }
 
-      .chance-row span {
+      .hero p,
+      .panel p,
+      .cluster p,
+      .auth-copy,
+      .subtle {
         color: var(--muted);
-        font-size: 0.98rem;
+        line-height: 1.7;
       }
 
-      .chart-shell {
-        margin-top: 8px;
+      .hero p {
+        max-width: 40rem;
+        font-size: 1.02rem;
       }
 
-      .chart {
-        width: 100%;
-        height: auto;
-        display: block;
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 240px;
+        gap: 18px;
+        margin-top: 28px;
       }
 
-      .grid-line {
-        stroke: rgba(255,255,255,0.12);
-        stroke-width: 1;
+      .mini-panel,
+      .signal-card {
+        padding: 18px;
+        border-radius: 26px;
+        background: rgba(255,255,255,0.035);
+        border: 1px solid rgba(255,255,255,0.07);
       }
 
-      .trend-line {
-        fill: none;
-        stroke: var(--aqua);
-        stroke-width: 4;
-        stroke-linejoin: round;
-        stroke-linecap: round;
+      .mini-kicker,
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--muted-2);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.72rem;
       }
 
-      .trend-dot {
-        fill: var(--coral);
-        stroke: rgba(255,255,255,0.92);
-        stroke-width: 3;
+      .mini-panel h2,
+      .panel h2,
+      .onboard-card h2 {
+        margin: 0;
+        font-size: clamp(1.9rem, 4vw, 3rem);
+        line-height: 0.96;
+        letter-spacing: -0.06em;
+        font-weight: 700;
       }
 
-      .chart-foot {
-        display: flex;
-        align-items: center;
+      .mini-panel p {
+        margin: 12px 0 0;
+      }
+
+      .signal-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .big-number {
+        font-size: 4rem;
+        line-height: 0.9;
+        letter-spacing: -0.08em;
+        font-weight: 700;
+      }
+
+      .statline {
         justify-content: space-between;
-        gap: 12px;
-        margin-top: 8px;
+        gap: 10px;
         color: var(--muted-2);
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-size: 0.72rem;
       }
 
-      .outcomes {
+      .curve {
+        width: 100%;
+        height: 86px;
+      }
+
+      .curve path:first-child {
+        fill: none;
+        stroke: rgba(255,255,255,0.1);
+        stroke-width: 1;
+      }
+
+      .curve path:last-child {
+        fill: none;
+        stroke: var(--teal);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .section {
+        margin-top: 18px;
+      }
+
+      .section-head {
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        letter-spacing: -0.05em;
+      }
+
+      .chip-row {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .mini-chip,
+      .beta-pill,
+      .cluster-status {
+        min-height: 34px;
+        padding: 0 12px;
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .cluster-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .cluster {
+        padding: 20px;
+        min-height: 218px;
+      }
+
+      .cluster-top,
+      .panel-foot {
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .cluster-top {
+        margin-bottom: 18px;
+      }
+
+      .cluster-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: var(--gold);
+        font-size: 1rem;
+      }
+
+      .cluster h3 {
+        margin: 0;
+        font-size: 2rem;
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+      }
+
+      .cluster p {
+        margin: 12px 0 18px;
+      }
+
+      .cluster-list {
+        display: grid;
+        gap: 8px;
+        color: var(--text);
+      }
+
+      .cluster-list span::before {
+        content: "• ";
+        color: var(--teal);
+      }
+
+      .side {
+        display: grid;
+        gap: 18px;
+        align-content: start;
+      }
+
+      .panel,
+      .onboard-card {
+        padding: 24px;
+      }
+
+      .panel-grid {
+        display: grid;
         gap: 12px;
         margin-top: 18px;
       }
 
-      .outcome {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-height: 58px;
-        padding: 0 18px;
-        border: 1px solid rgba(255,255,255,0.09);
-        border-radius: 18px;
-        color: var(--text);
-        background: var(--button);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+      .panel-tile {
+        padding: 16px 16px 18px;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.035);
+        border: 1px solid rgba(255,255,255,0.07);
       }
 
-      .outcome strong {
-        font-size: 1.12rem;
-      }
-
-      .yes:hover,
-      .no:hover {
-        border-color: rgba(100, 214, 239, 0.36);
-      }
-
-      .info {
-        display: grid;
-        gap: 16px;
-        margin-top: 28px;
-      }
-
-      .pillars,
-      .cta {
-        padding: 22px;
-        border-radius: 30px;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, rgba(9, 26, 38, 0.82), rgba(6, 20, 30, 0.92));
-        box-shadow: 0 20px 42px var(--shadow);
-      }
-
-      .section-kicker {
-        margin: 0 0 10px;
-        color: var(--muted-2);
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-size: 0.76rem;
-      }
-
-      .pillars h2,
-      .cta h2 {
-        margin: 0;
-        font-family: "Geist", system-ui, sans-serif;
-        font-size: clamp(2rem, 5vw, 2.9rem);
-        line-height: 1.05;
-        letter-spacing: -0.05em;
-        font-weight: 600;
-      }
-
-      .pillars-grid {
-        display: grid;
-        gap: 14px;
-        margin-top: 20px;
-      }
-
-      .pillar {
-        padding: 16px 18px;
-        border-radius: 22px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.06);
-      }
-
-      .pillar h3 {
+      .panel-tile h3 {
         margin: 0 0 8px;
-        font-family: "Geist", system-ui, sans-serif;
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         letter-spacing: -0.03em;
       }
 
-      .pillar p,
-      .cta p {
+      .panel-tile p {
         margin: 0;
-        color: var(--muted);
-        line-height: 1.7;
       }
 
-      .cta-actions {
-        display: flex;
+      .auth-row {
         gap: 12px;
         flex-wrap: wrap;
         margin-top: 18px;
       }
 
-      .cta-button {
+      .auth-button,
+      .ghost-button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 10px;
         min-height: 54px;
         padding: 0 18px;
         border-radius: 999px;
         border: 1px solid rgba(255,255,255,0.08);
-        background: rgba(255,255,255,0.05);
-        color: var(--text);
       }
 
-      .cta-button.primary {
-        background: linear-gradient(180deg, rgba(107, 224, 241, 0.95), rgba(79, 189, 208, 0.92));
-        color: #082130;
-        border-color: transparent;
+      .auth-button {
+        background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(234, 240, 249, 0.94));
+        color: var(--ink);
         font-weight: 700;
       }
 
-      @media (min-width: 960px) {
-        .page {
-          width: min(1260px, calc(100% - 42px));
-          padding-top: 26px;
-        }
+      .ghost-button {
+        background: rgba(255,255,255,0.045);
+        color: var(--text);
+      }
 
+      .button-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        font-weight: 800;
+        background: rgba(8, 22, 39, 0.08);
+      }
+
+      .onboard-card {
+        background:
+          radial-gradient(circle at 86% 14%, rgba(255, 213, 140, 0.18), transparent 12rem),
+          linear-gradient(180deg, rgba(10, 21, 35, 0.96), rgba(9, 17, 28, 0.9));
+      }
+
+      .steps {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+
+      .step-number {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ink);
+        font-weight: 800;
+        background: linear-gradient(180deg, var(--gold), #f0c05a);
+      }
+
+      .step strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .footer {
+        margin-top: 20px;
+        padding: 18px 8px 0;
+        color: var(--muted-2);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 1040px) {
         .layout {
-          display: grid;
-          grid-template-columns: minmax(360px, 620px) minmax(300px, 1fr);
-          gap: 22px;
-          align-items: start;
+          grid-template-columns: 1fr;
         }
 
-        .mobile-frame {
-          margin: 0;
-        }
-
-        .info {
-          margin-top: 0;
-          position: sticky;
-          top: 20px;
+        .side {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 760px) {
         .page {
           width: min(100% - 18px, 100%);
+          padding-top: 14px;
         }
 
-        .brand-name {
-          font-size: 1.9rem;
+        .topbar {
+          flex-direction: column;
+          align-items: stretch;
         }
 
-        .market-card {
-          border-radius: 30px;
+        .nav {
+          justify-content: flex-start;
         }
 
-        .market-card h3 {
-          max-width: 100%;
+        .hero {
+          padding: 22px;
+          min-height: auto;
+        }
+
+        h1 {
+          max-width: none;
+        }
+
+        .hero-grid,
+        .cluster-grid,
+        .side {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head {
+          flex-direction: column;
+          align-items: flex-start;
         }
       }
     </style>
   </head>
   <body>
     <main class="page">
+      <header class="topbar">
+        <div class="brand-left">
+          <div class="flower-mark" aria-hidden="true">
+            <span class="petal one"></span>
+            <span class="petal two"></span>
+            <span class="petal three"></span>
+            <span class="petal four"></span>
+            <span class="petal core"></span>
+          </div>
+          <span class="brand-name">flower</span>
+        </div>
+        <nav class="nav" aria-label="Primary">
+          <a href="#markets">markets</a>
+          <a href="#thesis">thesis</a>
+          <a href="#access">access</a>
+          <a href="https://x.com/Meta_Captain_" target="_blank" rel="noreferrer">x</a>
+        </nav>
+        <div class="status-chip">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>privy-ready beta shell</span>
+        </div>
+      </header>
+
       <div class="layout">
-        <section class="mobile-frame">
-          <div class="hero-copy">
-            <h1>See the world in bloom.</h1>
+        <section>
+          <article class="hero" id="top">
+            <div class="browser-pill">flower beta preview</div>
+            <h1>Price attention before the crowd does.</h1>
             <p>
-              flowers is a prediction market brand for people who want probability to feel elegant,
-              readable, and alive on mobile.
+              flower is a prediction market designed like a product people actually want to open.
+              Soft glass, bloom lighting, category worlds, and clean conviction paths instead of
+              terminal cosplay.
             </p>
-          </div>
 
-          <div class="browser-pill">
-            <span>flowers.chatgpt.site</span>
-            <span>...</span>
-          </div>
-
-          <div class="brandbar">
-            <div class="brand-left">
-              <div class="flower-mark" aria-hidden="true">
-                <span class="petal one"></span>
-                <span class="petal two"></span>
-                <span class="petal three"></span>
-                <span class="petal four"></span>
-                <span class="petal core"></span>
+            <div class="hero-grid">
+              <div class="mini-panel">
+                <p class="mini-kicker">What it feels like</p>
+                <h2>Calm enough to trust. Sharp enough to trade.</h2>
+                <p>
+                  The shell is built for fast reads on mobile: obvious categories, visible sentiment,
+                  elegant onboarding, and space for live markets later without the page feeling noisy.
+                </p>
               </div>
-              <span class="brand-name">flowers</span>
-            </div>
-            <button class="menu-button" type="button" aria-label="Open menu">
-              <span></span>
-            </button>
-          </div>
 
-          <div class="markets">
-            ${markets.map(renderMarket).join("")}
-          </div>
+              <div class="signal-card" aria-label="Illustrative activity card">
+                <p class="mini-kicker">Launch mood</p>
+                <div class="big-number">04</div>
+                <div class="statline">
+                  <span>category worlds</span>
+                  <span>queued first</span>
+                </div>
+                <svg class="curve" viewBox="0 0 220 86" role="img" aria-label="Bloom curve illustration">
+                  <path d="M 0 64 L 220 64"></path>
+                  <path d="M 8 70 C 36 64, 56 52, 82 56 S 132 28, 158 34 S 192 16, 212 18"></path>
+                </svg>
+                <div class="statline">
+                  <span>sentiment rising</span>
+                  <span>beta</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <section class="section" id="markets">
+            <div class="section-head">
+              <h2>Market worlds</h2>
+              <div class="chip-row">
+                <span class="mini-chip">no fake live prices</span>
+                <span class="mini-chip">mobile-first</span>
+                <span class="mini-chip">category-led</span>
+              </div>
+            </div>
+
+            <div class="cluster-grid">
+              <article class="cluster">
+                <div class="cluster-top">
+                  <span class="cluster-icon">✦</span>
+                  <span class="cluster-status">culture bloom</span>
+                </div>
+                <h3>Culture</h3>
+                <p>Memes, creators, virality, product launches, and internet attention swings.</p>
+                <div class="cluster-list">
+                  <span>streamers and creator arcs</span>
+                  <span>music drops and viral breakouts</span>
+                  <span>internet-native event markets</span>
+                </div>
+              </article>
+
+              <article class="cluster">
+                <div class="cluster-top">
+                  <span class="cluster-icon">◌</span>
+                  <span class="cluster-status">chain bloom</span>
+                </div>
+                <h3>Crypto</h3>
+                <p>Protocols, tokens, launches, listings, and the next thing people suddenly care about.</p>
+                <div class="cluster-list">
+                  <span>token narrative rotations</span>
+                  <span>launch timing and chain momentum</span>
+                  <span>exchange and product catalysts</span>
+                </div>
+              </article>
+
+              <article class="cluster">
+                <div class="cluster-top">
+                  <span class="cluster-icon">✺</span>
+                  <span class="cluster-status">world bloom</span>
+                </div>
+                <h3>Macro</h3>
+                <p>Rates, headlines, policy, and high-signal public events with real consequence.</p>
+                <div class="cluster-list">
+                  <span>policy and election timing</span>
+                  <span>economic headline sentiment</span>
+                  <span>global event outcome lanes</span>
+                </div>
+              </article>
+
+              <article class="cluster">
+                <div class="cluster-top">
+                  <span class="cluster-icon">❋</span>
+                  <span class="cluster-status">wildcard bloom</span>
+                </div>
+                <h3>Frontier</h3>
+                <p>AI, science, tech, and strange edge cases that feel obvious only after they happen.</p>
+                <div class="cluster-list">
+                  <span>frontier model release timing</span>
+                  <span>consumer tech moments</span>
+                  <span>breakout experimental markets</span>
+                </div>
+              </article>
+            </div>
+          </section>
         </section>
 
-        <aside class="info">
-          <section class="pillars">
-            <p class="section-kicker">Brand direction</p>
-            <h2>Soft-glass prediction markets with bloom energy.</h2>
-            <div class="pillars-grid">
-              ${pillars.map(renderPillar).join("")}
+        <aside class="side">
+          <section class="panel" id="thesis">
+            <p class="eyebrow">Brand thesis</p>
+            <h2>Prediction design without exchange-terminal ugliness.</h2>
+            <p>
+              flower should feel premium, not sterile. The visual system stays soft and inviting
+              while the product language stays clear: what is the question, where is conviction,
+              and how fast can I act?
+            </p>
+            <div class="panel-grid">
+              <article class="panel-tile">
+                <h3>Readable first</h3>
+                <p>Cards, categories, and probabilities should scan in seconds on a phone.</p>
+              </article>
+              <article class="panel-tile">
+                <h3>Identity-friendly</h3>
+                <p>Google and X sign-in create an easy first touch before wallet complexity shows up.</p>
+              </article>
+              <article class="panel-tile">
+                <h3>Built to bloom</h3>
+                <p>Start with category shells and onboarding now, then layer live market rails later.</p>
+              </article>
             </div>
           </section>
 
-          <section class="cta">
-            <p class="section-kicker">Launch concept</p>
-            <h2>Built for people who price the future all day on their phone.</h2>
-            <p>
-              The homepage leans into confidence without feeling cold: deep ocean background,
-              violet brandbar, airy typography, clean market cards, and a subtle aqua glow that
-              makes each probability feel alive.
+          <section class="onboard-card" id="access">
+            <p class="eyebrow">Access flow</p>
+            <h2>Privy-style onboarding, no wallet anxiety.</h2>
+            <p class="auth-copy">
+              The primary action is identity-first. Users enter through familiar accounts, then the
+              app can connect wallet logic quietly behind the scenes.
             </p>
-            <div class="cta-actions">
-              <a class="cta-button primary" href="#top">Explore markets</a>
-              <a class="cta-button" href="https://x.com/Meta_Captain_" target="_blank" rel="noreferrer">Brand social</a>
+            <div class="auth-row">
+              <a class="auth-button" href="#access">
+                <span class="button-icon">G</span>
+                <span>Continue with Google</span>
+              </a>
+              <a class="ghost-button" href="#access">
+                <span class="button-icon">X</span>
+                <span>Continue with X</span>
+              </a>
+            </div>
+            <div class="steps">
+              <div class="step">
+                <span class="step-number">1</span>
+                <div>
+                  <strong>Pick an identity</strong>
+                  <span class="subtle">Google or X gives the fastest first-touch login path.</span>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">2</span>
+                <div>
+                  <strong>Land in category view</strong>
+                  <span class="subtle">Open directly into culture, crypto, macro, or frontier worlds.</span>
+                </div>
+              </div>
+              <div class="step">
+                <span class="step-number">3</span>
+                <div>
+                  <strong>Unlock market actions later</strong>
+                  <span class="subtle">When the backend is ready, pricing and order flow slide into the same shell.</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel-foot" style="margin-top: 18px;">
+              <span class="beta-pill">beta concept</span>
+              <span class="subtle">designed for live data later</span>
             </div>
           </section>
         </aside>
       </div>
+
+      <footer class="footer">
+        flower is a brand shell for a prediction market product. Live market data and execution rails can be added later without changing the design language.
+      </footer>
     </main>
   </body>
 </html>`;
-}
 
 export default {
-  async fetch(request) {
-    const url = new URL(request.url);
-    return new Response(page(url.toString()), {
+  async fetch() {
+    return new Response(page, {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "public, max-age=300",
