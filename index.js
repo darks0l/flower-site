@@ -12,19 +12,19 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
     <title>flower | forecasting, redesigned</title>
     <meta
       name="description"
-      content="flower is a mobile-first forecasting product for culture, markets, macro, and frontier questions."
+      content="flower is a mobile-first forecasting product built around American sports markets, live game questions, and clean market pages."
     />
     <meta property="og:title" content="flower | forecasting, redesigned" />
     <meta
       property="og:description"
-      content="A calm, mobile-native forecasting product with category worlds, conviction cues, and clean onboarding."
+      content="A calm, mobile-native sports forecasting product with league hubs, individual market pages, and clean onboarding."
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="flower | forecasting, redesigned" />
     <meta
       name="twitter:description"
-      content="A calm, mobile-native forecasting product with category worlds, conviction cues, and clean onboarding."
+      content="A calm, mobile-native sports forecasting product with league hubs, individual market pages, and clean onboarding."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -470,6 +470,173 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
         color: var(--teal);
       }
 
+      .app-shell {
+        margin-top: 18px;
+      }
+
+      .app-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 14px;
+      }
+
+      .screen-card,
+      .market-panel {
+        padding: 20px;
+        border-radius: 28px;
+        background: rgba(255,255,255,0.035);
+        border: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .screen-card {
+        display: grid;
+        gap: 16px;
+      }
+
+      .screen-head,
+      .league-strip,
+      .market-line,
+      .detail-top,
+      .detail-meta,
+      .price-row,
+      .slip-head,
+      .slip-row {
+        display: flex;
+        align-items: center;
+      }
+
+      .screen-head,
+      .detail-top,
+      .slip-head {
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .league-strip,
+      .detail-meta {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .screen-label,
+      .market-tag,
+      .detail-chip,
+      .slip-tag {
+        min-height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .screen-title {
+        margin: 0;
+        font-size: 1.35rem;
+        letter-spacing: -0.04em;
+      }
+
+      .match-list,
+      .price-board,
+      .slip-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .market-line,
+      .slip-row {
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .match-card,
+      .slip-row,
+      .detail-card {
+        padding: 16px;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .match-card h4,
+      .detail-card h4,
+      .slip-row h4 {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: -0.03em;
+      }
+
+      .match-card p,
+      .detail-card p,
+      .slip-row p,
+      .market-panel p {
+        margin: 8px 0 0;
+      }
+
+      .market-line strong,
+      .price-row strong {
+        font-size: 0.95rem;
+      }
+
+      .market-line span,
+      .price-row span,
+      .slip-row span,
+      .detail-meta span {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .market-pill,
+      .price-pill {
+        min-width: 64px;
+        min-height: 36px;
+        padding: 0 12px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.05);
+        font-weight: 700;
+      }
+
+      .market-pill.up,
+      .price-pill.up {
+        color: var(--teal);
+      }
+
+      .market-pill.down,
+      .price-pill.down {
+        color: var(--rose);
+      }
+
+      .detail-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .detail-question {
+        margin: 0;
+        font-size: 1.2rem;
+        line-height: 1.15;
+        letter-spacing: -0.04em;
+      }
+
+      .price-row {
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .price-note {
+        color: var(--muted-2);
+        font-size: 0.8rem;
+      }
+
+      .slip-list {
+        margin-top: 16px;
+      }
+
       .side {
         display: grid;
         gap: 18px;
@@ -685,7 +852,8 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
 
         .hero-grid,
         .cluster-grid,
-        .side {
+        .side,
+        .app-grid {
           grid-template-columns: 1fr;
         }
 
@@ -706,7 +874,13 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
         .section-head,
         .panel-foot,
         .auth-status-row,
-        .account-row {
+        .account-row,
+        .screen-head,
+        .detail-top,
+        .slip-head,
+        .market-line,
+        .slip-row,
+        .price-row {
           flex-direction: column;
           align-items: flex-start;
         }
@@ -733,7 +907,7 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
           <a href="#access">access</a>
           <a href="https://x.com/Meta_Captain_" target="_blank" rel="noreferrer">x</a>
         </nav>
-        <div class="status-chip"><span class="status-dot" aria-hidden="true"></span><span>consumer forecasting for fast markets</span></div>
+        <div class="status-chip"><span class="status-dot" aria-hidden="true"></span><span>American sports forecasting, built for phones</span></div>
       </header>
 
       <div class="layout">
@@ -741,7 +915,7 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
           <article class="hero" id="top">
             <div class="browser-pill">forecasting, redesigned for phones</div>
             <h1>Read the signal before consensus hardens.</h1>
-            <p>flower turns fast-moving questions into a calm, legible product. Instead of noisy exchange screens, the experience centers on category worlds, confidence cues, and decision speed that feels natural on mobile.</p>
+            <p>flower turns American sports markets into a calm, legible product. Instead of noisy betting-style screens, the experience centers on league hubs, clear matchup pages, and market detail views that feel natural on mobile.</p>
             <div class="hero-actions">
               <a class="hero-button primary" href="#access">Open your account</a>
               <a class="hero-button secondary" href="#worlds">Explore the worlds</a>
@@ -751,7 +925,7 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
               <div class="mini-panel">
                 <p class="mini-kicker">Why it works</p>
                 <h2>Clear enough for everyday users. Sharp enough for obsessed ones.</h2>
-                <p>Everything is tuned for quick reads: obvious category entry points, strong question hierarchy, visible conviction, and watchlist-friendly surfaces that still feel premium at a glance.</p>
+                <p>Everything is tuned for quick reads: obvious league entry points, strong matchup hierarchy, visible conviction, and market pages that still feel premium at a glance.</p>
               </div>
 
               <div class="signal-card" aria-label="Illustrative activity card">
@@ -769,38 +943,129 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
 
           <section class="section" id="worlds">
             <div class="section-head">
-              <h2>Market worlds</h2>
-              <div class="chip-row"><span class="mini-chip">mobile-native</span><span class="mini-chip">decision-first</span><span class="mini-chip">cross-category</span></div>
+              <h2>Opening leagues</h2>
+              <div class="chip-row"><span class="mini-chip">American sports first</span><span class="mini-chip">mobile-native</span><span class="mini-chip">decision-first</span></div>
             </div>
 
             <div class="cluster-grid">
               <article class="cluster">
-                <div class="cluster-top"><span class="cluster-icon">✦</span><span class="cluster-status">culture bloom</span></div>
-                <h3>Culture</h3>
-                <p>Creators, memes, launches, and attention shifts that spread before the headlines catch up.</p>
-                <div class="cluster-list"><span>creator arcs and breakout moments</span><span>music drops and viral lift</span><span>internet-native event questions</span></div>
+                <div class="cluster-top"><span class="cluster-icon">NFL</span><span class="cluster-status">Sunday bloom</span></div>
+                <h3>NFL</h3>
+                <p>The flagship surface: weekly game pages, playoff races, primetime matchups, and fast-moving narrative swings.</p>
+                <div class="cluster-list"><span>spread and moneyline questions</span><span>player performance markets</span><span>division, wildcard, and postseason arcs</span></div>
               </article>
 
               <article class="cluster">
-                <div class="cluster-top"><span class="cluster-icon">◌</span><span class="cluster-status">chain bloom</span></div>
-                <h3>Crypto</h3>
-                <p>Protocols, listings, launches, and momentum shifts across the onchain world.</p>
-                <div class="cluster-list"><span>narrative rotations</span><span>launch timing and chain momentum</span><span>exchange and product catalysts</span></div>
+                <div class="cluster-top"><span class="cluster-icon">NBA</span><span class="cluster-status">night bloom</span></div>
+                <h3>NBA</h3>
+                <p>High-frequency slates, player-driven movement, and game-by-game shifts in form that reward daily attention.</p>
+                <div class="cluster-list"><span>same-night featured games</span><span>player points, assists, and triples</span><span>conference and award ladders</span></div>
               </article>
 
               <article class="cluster">
-                <div class="cluster-top"><span class="cluster-icon">✺</span><span class="cluster-status">world bloom</span></div>
-                <h3>Macro</h3>
-                <p>Rates, policy, elections, and public events where timing and consensus both matter.</p>
-                <div class="cluster-list"><span>policy and election timing</span><span>economic headline sentiment</span><span>global event outcome lanes</span></div>
+                <div class="cluster-top"><span class="cluster-icon">MLB</span><span class="cluster-status">daily bloom</span></div>
+                <h3>MLB</h3>
+                <p>Always-on volume for the product: full-day boards, series momentum, and stat-driven edges across a long season.</p>
+                <div class="cluster-list"><span>game totals and run lines</span><span>pitcher strikeout and hit markets</span><span>division races and pennant futures</span></div>
               </article>
 
               <article class="cluster">
-                <div class="cluster-top"><span class="cluster-icon">❋</span><span class="cluster-status">frontier bloom</span></div>
-                <h3>Frontier</h3>
-                <p>AI, science, and emerging tech questions that reward early pattern recognition.</p>
-                <div class="cluster-list"><span>frontier model release timing</span><span>consumer tech inflection points</span><span>experimental markets with real pull</span></div>
+                <div class="cluster-top"><span class="cluster-icon">CFB</span><span class="cluster-status">rivalry bloom</span></div>
+                <h3>College Football</h3>
+                <p>Rivalries, rankings, and weekend intensity that make every matchup page feel bigger than a single result.</p>
+                <div class="cluster-list"><span>ranked showdown markets</span><span>conference title and playoff paths</span><span>upset alerts and live momentum</span></div>
               </article>
+            </div>
+          </section>
+
+          <section class="section app-shell" id="markets">
+            <div class="section-head">
+              <h2>Inside the app</h2>
+              <div class="chip-row"><span class="mini-chip">league hubs</span><span class="mini-chip">market pages</span><span class="mini-chip">watchlists and slips</span></div>
+            </div>
+
+            <div class="app-grid">
+              <article class="screen-card">
+                <div class="screen-head">
+                  <div>
+                    <p class="eyebrow">League page</p>
+                    <h3 class="screen-title">NFL home feels like the front door</h3>
+                  </div>
+                  <span class="screen-label">Week 6</span>
+                </div>
+                <div class="league-strip">
+                  <span class="market-tag">featured</span>
+                  <span class="market-tag">afternoon slate</span>
+                  <span class="market-tag">primetime</span>
+                  <span class="market-tag">futures</span>
+                </div>
+                <div class="match-list">
+                  <div class="match-card">
+                    <div class="market-line"><strong>Ravens at Chiefs</strong><span>Sun 8:20 PM</span></div>
+                    <p>Open the matchup page fast, see the headline question first, then drill straight into spread, total, player props, and game flow markets.</p>
+                  </div>
+                  <div class="match-card">
+                    <div class="market-line"><strong>Lions at Packers</strong><span>Sun 4:25 PM</span></div>
+                    <p>Movement cues and watchlist state stay visible from the list view so users can scan the whole slate without losing context.</p>
+                  </div>
+                  <div class="match-card">
+                    <div class="market-line"><strong>49ers at Rams</strong><span>Mon 8:15 PM</span></div>
+                    <p>Prime slots get a richer editorial lane: injury notes, conviction change, and the clean route into each market page.</p>
+                  </div>
+                </div>
+              </article>
+
+              <div class="match-list">
+                <article class="market-panel">
+                  <div class="detail-top">
+                    <div>
+                      <p class="eyebrow">Individual market</p>
+                      <h3 class="screen-title">Ravens at Chiefs</h3>
+                    </div>
+                    <span class="screen-label">Game page</span>
+                  </div>
+                  <div class="detail-card">
+                    <p class="detail-question">Will Kansas City cover -3.5 at home?</p>
+                    <div class="detail-meta">
+                      <span class="detail-chip">spread</span>
+                      <span class="detail-chip">closing soon</span>
+                      <span class="detail-chip">high activity</span>
+                    </div>
+                    <div class="price-board">
+                      <div class="price-row"><strong>Yes</strong><span>Chiefs cover</span><span class="price-pill up">61%</span></div>
+                      <div class="price-row"><strong>No</strong><span>Ravens +3.5</span><span class="price-pill down">39%</span></div>
+                    </div>
+                    <span class="price-note">The page should make the question, timing, and conviction obvious before anything else.</span>
+                  </div>
+                </article>
+
+                <article class="market-panel">
+                  <div class="slip-head">
+                    <div>
+                      <p class="eyebrow">Personal layer</p>
+                      <h3 class="screen-title">Watchlist and slip</h3>
+                    </div>
+                    <span class="slip-tag">2 saved</span>
+                  </div>
+                  <p>The app should support a real daily loop: save a matchup, follow movement, and keep pending positions in one calm place.</p>
+                  <div class="slip-list">
+                    <div class="slip-row">
+                      <div>
+                        <h4>Chiefs -3.5</h4>
+                        <p>Ravens at Chiefs</p>
+                      </div>
+                      <span>61%</span>
+                    </div>
+                    <div class="slip-row">
+                      <div>
+                        <h4>Lakers win + LeBron 25+</h4>
+                        <p>Lakers at Suns</p>
+                      </div>
+                      <span>48%</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
             </div>
           </section>
         </section>
@@ -808,12 +1073,12 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
         <aside class="side">
           <section class="panel" id="thesis">
             <p class="eyebrow">Product thesis</p>
-            <h2>Forecasting without the terminal aesthetic.</h2>
-            <p>flower should feel premium, social, and immediate. The product language stays simple: what is happening, where is conviction moving, and what deserves your attention right now?</p>
+            <h2>Sports markets without sportsbook clutter.</h2>
+            <p>flower should feel premium, social, and immediate. The product language stays simple: what game matters, what market is moving, and where should a user go next without getting buried in noise?</p>
             <div class="panel-grid">
-              <article class="panel-tile"><h3>Readable first</h3><p>Questions, probabilities, and movement cues should scan in seconds on a phone.</p></article>
-              <article class="panel-tile"><h3>Confidence over noise</h3><p>Strong hierarchy keeps the important signal visible even when the underlying market is chaotic.</p></article>
-              <article class="panel-tile"><h3>Account-first onboarding</h3><p>Familiar identity rails make entry feel instant instead of technical.</p></article>
+              <article class="panel-tile"><h3>League-first structure</h3><p>NFL, NBA, MLB, and college football should each feel like a real home, not just a filter.</p></article>
+              <article class="panel-tile"><h3>Game pages that convert</h3><p>Each matchup page should organize the full stack: headline question, related markets, movement, and personal follow state.</p></article>
+              <article class="panel-tile"><h3>Account-first onboarding</h3><p>Familiar identity rails make entry feel instant before deeper product habits take over.</p></article>
             </div>
           </section>
 
@@ -825,7 +1090,7 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
               </div>
               <div class="auth-state-pill"><span class="auth-state-dot pending" id="authStateDot" aria-hidden="true"></span><span id="authStateLabel">Connecting sign-in</span></div>
             </div>
-            <p class="auth-copy">Start with Google or X, land inside the product immediately, and let your profile, watchlists, and activity travel with you across every world.</p>
+            <p class="auth-copy">Start with Google or X, land inside the product immediately, and let your profile, watchlists, and saved markets travel with you across every league.</p>
             <div class="auth-row">
               <button class="auth-button" id="loginGoogle" type="button"><span class="button-icon">G</span><span>Continue with Google</span></button>
               <button class="ghost-button" id="loginTwitter" type="button"><span class="button-icon">X</span><span>Continue with X</span></button>
@@ -833,8 +1098,8 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
             <p class="auth-feedback" id="authFeedback">Opening a clean account-first sign-in flow.</p>
             <div class="steps">
               <div class="step"><span class="step-number">1</span><div><strong>Choose an account</strong><span class="subtle">A familiar sign-in gets people moving without friction.</span></div></div>
-              <div class="step"><span class="step-number">2</span><div><strong>Open into your world</strong><span class="subtle">Land directly in culture, crypto, macro, or frontier based on what you follow.</span></div></div>
-              <div class="step"><span class="step-number">3</span><div><strong>Track conviction daily</strong><span class="subtle">Watchlists, briefs, and market movement keep the product sticky between sessions.</span></div></div>
+              <div class="step"><span class="step-number">2</span><div><strong>Open into your league</strong><span class="subtle">Land directly in NFL, NBA, MLB, or college football based on what you follow.</span></div></div>
+              <div class="step"><span class="step-number">3</span><div><strong>Track conviction daily</strong><span class="subtle">Watchlists, briefs, and matchup movement keep the product sticky between sessions.</span></div></div>
             </div>
             <section class="account-card" id="accountCard" hidden>
               <div class="account-row">
@@ -854,15 +1119,15 @@ const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
 
       <section class="dock">
         <p class="eyebrow">Daily product loop</p>
-        <h2>Open flower. Read the day. Act with context.</h2>
-        <p>The product should feel useful before a user makes a single move. Morning brief, clean world selection, confidence cues, and a fast return path make the app feel like a habit instead of a novelty.</p>
+        <h2>Open flower. Check the slate. Move through the best markets fast.</h2>
+        <p>The product should feel useful before a user makes a single decision. League hubs, featured matchups, individual market pages, and a clean return path make the app feel like a real daily sports habit instead of a novelty.</p>
         <div class="dock-actions">
           <a class="hero-button primary" href="#access">Join flower</a>
-          <a class="hero-button secondary" href="#thesis">See the thesis</a>
+          <a class="hero-button secondary" href="#markets">View the app</a>
         </div>
       </section>
 
-      <footer class="footer">flower is a consumer forecasting product built around readable mobile flows, strong category identity, and fast conviction tracking.</footer>
+      <footer class="footer">flower is a consumer sports forecasting product built around readable mobile flows, strong league identity, and fast market navigation.</footer>
     </main>
 
     <script>
