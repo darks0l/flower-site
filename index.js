@@ -1,24 +1,30 @@
-const page = `<!doctype html>
+const escapeForScript = (value) =>
+  String(value ?? "")
+    .replace(/\\/g, "\\\\")
+    .replace(/`/g, "\\`")
+    .replace(/\$\{/g, "\\${");
+
+const renderPage = ({appId = "", clientId = ""} = {}) => `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>flower | prediction market</title>
+    <title>flower | forecasting, redesigned</title>
     <meta
       name="description"
-      content="flower is a mobile-first prediction market brand with soft-glass design, category worlds, and Privy-ready onboarding."
+      content="flower is a mobile-first forecasting product for culture, markets, macro, and frontier questions."
     />
-    <meta property="og:title" content="flower | prediction market" />
+    <meta property="og:title" content="flower | forecasting, redesigned" />
     <meta
       property="og:description"
-      content="A bloom-lit prediction market shell with category worlds, clean onboarding, and no terminal ugliness."
+      content="A calm, mobile-native forecasting product with category worlds, conviction cues, and clean onboarding."
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="flower | prediction market" />
+    <meta name="twitter:title" content="flower | forecasting, redesigned" />
     <meta
       name="twitter:description"
-      content="A bloom-lit prediction market shell with category worlds, clean onboarding, and no terminal ugliness."
+      content="A calm, mobile-native forecasting product with category worlds, conviction cues, and clean onboarding."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,19 +34,15 @@ const page = `<!doctype html>
     />
     <style>
       :root {
-        --bg: #06121f;
-        --bg-2: #0a1c2e;
-        --panel: rgba(7, 16, 30, 0.8);
-        --panel-2: rgba(10, 22, 38, 0.92);
         --line: rgba(161, 198, 223, 0.12);
         --text: #f6f8fc;
         --muted: rgba(221, 229, 239, 0.72);
         --muted-2: rgba(188, 205, 220, 0.54);
         --teal: #8de7d9;
-        --teal-2: #58d3c5;
         --rose: #ff8e97;
         --gold: #ffd887;
         --ink: #0b1728;
+        --danger: #ffb0b7;
         --shadow: rgba(0, 0, 0, 0.32);
       }
 
@@ -76,20 +78,14 @@ const page = `<!doctype html>
         opacity: 0.22;
       }
 
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      button {
-        font: inherit;
-      }
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; }
 
       .page {
         position: relative;
         width: min(1240px, calc(100% - 28px));
         margin: 0 auto;
-        padding: 20px 0 72px;
+        padding: 20px 0 80px;
       }
 
       .topbar {
@@ -110,18 +106,20 @@ const page = `<!doctype html>
       .nav,
       .status-chip,
       .auth-row,
+      .hero-actions,
       .statline,
       .cluster-top,
       .chip-row,
       .section-head,
-      .panel-foot {
+      .panel-foot,
+      .dock-actions,
+      .auth-status-row,
+      .account-row {
         display: flex;
         align-items: center;
       }
 
-      .brand-left {
-        gap: 12px;
-      }
+      .brand-left { gap: 12px; }
 
       .flower-mark {
         position: relative;
@@ -174,7 +172,8 @@ const page = `<!doctype html>
       .status-chip,
       .mini-chip,
       .cluster-status,
-      .beta-pill {
+      .beta-pill,
+      .auth-state-pill {
         border: 1px solid rgba(255,255,255,0.08);
         background: rgba(255,255,255,0.04);
       }
@@ -192,7 +191,8 @@ const page = `<!doctype html>
         justify-content: center;
       }
 
-      .status-dot {
+      .status-dot,
+      .auth-state-dot {
         width: 8px;
         height: 8px;
         border-radius: 999px;
@@ -200,16 +200,27 @@ const page = `<!doctype html>
         box-shadow: 0 0 16px rgba(141, 231, 217, 0.85);
       }
 
+      .auth-state-dot.pending {
+        background: var(--gold);
+        box-shadow: 0 0 16px rgba(255, 216, 135, 0.8);
+      }
+
+      .auth-state-dot.error {
+        background: var(--danger);
+        box-shadow: 0 0 16px rgba(255, 176, 183, 0.8);
+      }
+
       .layout {
         display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+        grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.84fr);
         gap: 18px;
       }
 
       .hero,
       .panel,
       .cluster,
-      .onboard-card {
+      .onboard-card,
+      .dock {
         position: relative;
         overflow: hidden;
         border: 1px solid var(--line);
@@ -219,8 +230,8 @@ const page = `<!doctype html>
       }
 
       .hero {
-        padding: 28px;
-        min-height: 420px;
+        padding: 32px;
+        min-height: 460px;
         background:
           radial-gradient(circle at 76% 20%, rgba(111, 224, 207, 0.18), transparent 16rem),
           radial-gradient(circle at 80% 74%, rgba(252, 142, 158, 0.12), transparent 15rem),
@@ -230,7 +241,8 @@ const page = `<!doctype html>
       .hero::after,
       .panel::after,
       .cluster::after,
-      .onboard-card::after {
+      .onboard-card::after,
+      .dock::after {
         content: "";
         position: absolute;
         inset: auto -80px -100px auto;
@@ -267,26 +279,37 @@ const page = `<!doctype html>
       .panel p,
       .cluster p,
       .auth-copy,
-      .subtle {
+      .subtle,
+      .dock p,
+      .auth-feedback {
         color: var(--muted);
         line-height: 1.7;
       }
 
       .hero p {
-        max-width: 40rem;
-        font-size: 1.02rem;
+        max-width: 41rem;
+        font-size: 1.04rem;
+      }
+
+      .hero-actions,
+      .auth-row,
+      .dock-actions {
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
       }
 
       .hero-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 240px;
+        grid-template-columns: minmax(0, 1fr) 252px;
         gap: 18px;
         margin-top: 28px;
       }
 
       .mini-panel,
-      .signal-card {
-        padding: 18px;
+      .signal-card,
+      .account-card {
+        padding: 20px;
         border-radius: 26px;
         background: rgba(255,255,255,0.035);
         border: 1px solid rgba(255,255,255,0.07);
@@ -303,7 +326,9 @@ const page = `<!doctype html>
 
       .mini-panel h2,
       .panel h2,
-      .onboard-card h2 {
+      .onboard-card h2,
+      .dock h2,
+      .account-card h3 {
         margin: 0;
         font-size: clamp(1.9rem, 4vw, 3rem);
         line-height: 0.96;
@@ -311,9 +336,11 @@ const page = `<!doctype html>
         font-weight: 700;
       }
 
-      .mini-panel p {
-        margin: 12px 0 0;
+      .account-card h3 {
+        font-size: 1.35rem;
       }
+
+      .mini-panel p { margin: 12px 0 0; }
 
       .signal-card {
         display: grid;
@@ -355,9 +382,7 @@ const page = `<!doctype html>
         stroke-linejoin: round;
       }
 
-      .section {
-        margin-top: 18px;
-      }
+      .section { margin-top: 18px; }
 
       .section-head {
         justify-content: space-between;
@@ -378,12 +403,17 @@ const page = `<!doctype html>
 
       .mini-chip,
       .beta-pill,
-      .cluster-status {
+      .cluster-status,
+      .auth-state-pill {
         min-height: 34px;
         padding: 0 12px;
         border-radius: 999px;
         color: var(--muted);
         font-size: 0.82rem;
+      }
+
+      .auth-state-pill {
+        gap: 10px;
       }
 
       .cluster-grid {
@@ -393,19 +423,19 @@ const page = `<!doctype html>
       }
 
       .cluster {
-        padding: 20px;
-        min-height: 218px;
+        padding: 22px;
+        min-height: 232px;
       }
 
       .cluster-top,
-      .panel-foot {
+      .panel-foot,
+      .auth-status-row,
+      .account-row {
         justify-content: space-between;
         gap: 12px;
       }
 
-      .cluster-top {
-        margin-bottom: 18px;
-      }
+      .cluster-top { margin-bottom: 18px; }
 
       .cluster-icon {
         width: 42px;
@@ -427,9 +457,7 @@ const page = `<!doctype html>
         letter-spacing: -0.05em;
       }
 
-      .cluster p {
-        margin: 12px 0 18px;
-      }
+      .cluster p { margin: 12px 0 18px; }
 
       .cluster-list {
         display: grid;
@@ -449,7 +477,8 @@ const page = `<!doctype html>
       }
 
       .panel,
-      .onboard-card {
+      .onboard-card,
+      .dock {
         padding: 24px;
       }
 
@@ -472,18 +501,12 @@ const page = `<!doctype html>
         letter-spacing: -0.03em;
       }
 
-      .panel-tile p {
-        margin: 0;
-      }
-
-      .auth-row {
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 18px;
-      }
+      .panel-tile p { margin: 0; }
 
       .auth-button,
-      .ghost-button {
+      .ghost-button,
+      .hero-button,
+      .logout-button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -492,17 +515,28 @@ const page = `<!doctype html>
         padding: 0 18px;
         border-radius: 999px;
         border: 1px solid rgba(255,255,255,0.08);
+        cursor: pointer;
       }
 
-      .auth-button {
+      .auth-button,
+      .hero-button.primary {
         background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(234, 240, 249, 0.94));
         color: var(--ink);
         font-weight: 700;
       }
 
-      .ghost-button {
+      .ghost-button,
+      .hero-button.secondary,
+      .logout-button {
         background: rgba(255,255,255,0.045);
         color: var(--text);
+      }
+
+      .auth-button:disabled,
+      .ghost-button:disabled,
+      .logout-button:disabled {
+        opacity: 0.55;
+        cursor: wait;
       }
 
       .button-icon {
@@ -553,6 +587,44 @@ const page = `<!doctype html>
         margin-bottom: 4px;
       }
 
+      .auth-feedback {
+        margin: 14px 0 0;
+        min-height: 26px;
+      }
+
+      .account-card {
+        margin-top: 18px;
+      }
+
+      .account-row {
+        align-items: flex-start;
+      }
+
+      .account-card p {
+        margin: 10px 0 0;
+      }
+
+      .account-card[hidden] {
+        display: none;
+      }
+
+      .account-meta {
+        color: var(--muted-2);
+        font-size: 0.88rem;
+      }
+
+      .dock {
+        margin-top: 18px;
+        background:
+          radial-gradient(circle at 18% 22%, rgba(141, 231, 217, 0.18), transparent 13rem),
+          linear-gradient(180deg, rgba(8, 18, 33, 0.96), rgba(7, 17, 29, 0.9));
+      }
+
+      .dock p {
+        max-width: 42rem;
+        margin: 12px 0 0;
+      }
+
       .footer {
         margin-top: 20px;
         padding: 18px 8px 0;
@@ -561,37 +633,54 @@ const page = `<!doctype html>
       }
 
       @media (max-width: 1040px) {
-        .layout {
-          grid-template-columns: 1fr;
-        }
-
-        .side {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+        .layout { grid-template-columns: 1fr; }
+        .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       }
 
       @media (max-width: 760px) {
         .page {
-          width: min(100% - 18px, 100%);
-          padding-top: 14px;
+          width: min(100% - 16px, 100%);
+          padding-top: 12px;
+          padding-bottom: 96px;
         }
 
         .topbar {
           flex-direction: column;
           align-items: stretch;
+          gap: 12px;
+          padding: 12px;
+          border-radius: 24px;
         }
 
         .nav {
+          flex-wrap: nowrap;
+          justify-content: flex-start;
+          overflow-x: auto;
+          padding-bottom: 2px;
+          scrollbar-width: none;
+        }
+
+        .nav::-webkit-scrollbar { display: none; }
+        .nav a { flex: 0 0 auto; }
+
+        .status-chip {
+          width: 100%;
           justify-content: flex-start;
         }
 
-        .hero {
-          padding: 22px;
-          min-height: auto;
+        .hero,
+        .panel,
+        .onboard-card,
+        .dock {
+          padding: 20px;
+          border-radius: 28px;
         }
+
+        .hero { min-height: auto; }
 
         h1 {
           max-width: none;
+          font-size: clamp(2.7rem, 15vw, 4.1rem);
         }
 
         .hero-grid,
@@ -600,9 +689,31 @@ const page = `<!doctype html>
           grid-template-columns: 1fr;
         }
 
-        .section-head {
+        .hero-actions,
+        .auth-row,
+        .dock-actions {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .hero-button,
+        .auth-button,
+        .ghost-button,
+        .logout-button {
+          width: 100%;
+        }
+
+        .section-head,
+        .panel-foot,
+        .auth-status-row,
+        .account-row {
           flex-direction: column;
           align-items: flex-start;
+        }
+
+        .cluster {
+          min-height: auto;
+          padding: 20px;
         }
       }
     </style>
@@ -612,131 +723,83 @@ const page = `<!doctype html>
       <header class="topbar">
         <div class="brand-left">
           <div class="flower-mark" aria-hidden="true">
-            <span class="petal one"></span>
-            <span class="petal two"></span>
-            <span class="petal three"></span>
-            <span class="petal four"></span>
-            <span class="petal core"></span>
+            <span class="petal one"></span><span class="petal two"></span><span class="petal three"></span><span class="petal four"></span><span class="petal core"></span>
           </div>
           <span class="brand-name">flower</span>
         </div>
         <nav class="nav" aria-label="Primary">
-          <a href="#markets">markets</a>
-          <a href="#thesis">thesis</a>
+          <a href="#worlds">worlds</a>
+          <a href="#thesis">product</a>
           <a href="#access">access</a>
           <a href="https://x.com/Meta_Captain_" target="_blank" rel="noreferrer">x</a>
         </nav>
-        <div class="status-chip">
-          <span class="status-dot" aria-hidden="true"></span>
-          <span>privy-ready beta shell</span>
-        </div>
+        <div class="status-chip"><span class="status-dot" aria-hidden="true"></span><span>consumer forecasting for fast markets</span></div>
       </header>
 
       <div class="layout">
         <section>
           <article class="hero" id="top">
-            <div class="browser-pill">flower beta preview</div>
-            <h1>Price attention before the crowd does.</h1>
-            <p>
-              flower is a prediction market designed like a product people actually want to open.
-              Soft glass, bloom lighting, category worlds, and clean conviction paths instead of
-              terminal cosplay.
-            </p>
+            <div class="browser-pill">forecasting, redesigned for phones</div>
+            <h1>Read the signal before consensus hardens.</h1>
+            <p>flower turns fast-moving questions into a calm, legible product. Instead of noisy exchange screens, the experience centers on category worlds, confidence cues, and decision speed that feels natural on mobile.</p>
+            <div class="hero-actions">
+              <a class="hero-button primary" href="#access">Open your account</a>
+              <a class="hero-button secondary" href="#worlds">Explore the worlds</a>
+            </div>
 
             <div class="hero-grid">
               <div class="mini-panel">
-                <p class="mini-kicker">What it feels like</p>
-                <h2>Calm enough to trust. Sharp enough to trade.</h2>
-                <p>
-                  The shell is built for fast reads on mobile: obvious categories, visible sentiment,
-                  elegant onboarding, and space for live markets later without the page feeling noisy.
-                </p>
+                <p class="mini-kicker">Why it works</p>
+                <h2>Clear enough for everyday users. Sharp enough for obsessed ones.</h2>
+                <p>Everything is tuned for quick reads: obvious category entry points, strong question hierarchy, visible conviction, and watchlist-friendly surfaces that still feel premium at a glance.</p>
               </div>
 
               <div class="signal-card" aria-label="Illustrative activity card">
-                <p class="mini-kicker">Launch mood</p>
+                <p class="mini-kicker">Core layout</p>
                 <div class="big-number">04</div>
-                <div class="statline">
-                  <span>category worlds</span>
-                  <span>queued first</span>
-                </div>
-                <svg class="curve" viewBox="0 0 220 86" role="img" aria-label="Bloom curve illustration">
+                <div class="statline"><span>primary worlds</span><span>always visible</span></div>
+                <svg class="curve" viewBox="0 0 220 86" role="img" aria-label="Signal curve illustration">
                   <path d="M 0 64 L 220 64"></path>
                   <path d="M 8 70 C 36 64, 56 52, 82 56 S 132 28, 158 34 S 192 16, 212 18"></path>
                 </svg>
-                <div class="statline">
-                  <span>sentiment rising</span>
-                  <span>beta</span>
-                </div>
+                <div class="statline"><span>confidence up</span><span>daily rhythm</span></div>
               </div>
             </div>
           </article>
 
-          <section class="section" id="markets">
+          <section class="section" id="worlds">
             <div class="section-head">
               <h2>Market worlds</h2>
-              <div class="chip-row">
-                <span class="mini-chip">no fake live prices</span>
-                <span class="mini-chip">mobile-first</span>
-                <span class="mini-chip">category-led</span>
-              </div>
+              <div class="chip-row"><span class="mini-chip">mobile-native</span><span class="mini-chip">decision-first</span><span class="mini-chip">cross-category</span></div>
             </div>
 
             <div class="cluster-grid">
               <article class="cluster">
-                <div class="cluster-top">
-                  <span class="cluster-icon">✦</span>
-                  <span class="cluster-status">culture bloom</span>
-                </div>
+                <div class="cluster-top"><span class="cluster-icon">✦</span><span class="cluster-status">culture bloom</span></div>
                 <h3>Culture</h3>
-                <p>Memes, creators, virality, product launches, and internet attention swings.</p>
-                <div class="cluster-list">
-                  <span>streamers and creator arcs</span>
-                  <span>music drops and viral breakouts</span>
-                  <span>internet-native event markets</span>
-                </div>
+                <p>Creators, memes, launches, and attention shifts that spread before the headlines catch up.</p>
+                <div class="cluster-list"><span>creator arcs and breakout moments</span><span>music drops and viral lift</span><span>internet-native event questions</span></div>
               </article>
 
               <article class="cluster">
-                <div class="cluster-top">
-                  <span class="cluster-icon">◌</span>
-                  <span class="cluster-status">chain bloom</span>
-                </div>
+                <div class="cluster-top"><span class="cluster-icon">◌</span><span class="cluster-status">chain bloom</span></div>
                 <h3>Crypto</h3>
-                <p>Protocols, tokens, launches, listings, and the next thing people suddenly care about.</p>
-                <div class="cluster-list">
-                  <span>token narrative rotations</span>
-                  <span>launch timing and chain momentum</span>
-                  <span>exchange and product catalysts</span>
-                </div>
+                <p>Protocols, listings, launches, and momentum shifts across the onchain world.</p>
+                <div class="cluster-list"><span>narrative rotations</span><span>launch timing and chain momentum</span><span>exchange and product catalysts</span></div>
               </article>
 
               <article class="cluster">
-                <div class="cluster-top">
-                  <span class="cluster-icon">✺</span>
-                  <span class="cluster-status">world bloom</span>
-                </div>
+                <div class="cluster-top"><span class="cluster-icon">✺</span><span class="cluster-status">world bloom</span></div>
                 <h3>Macro</h3>
-                <p>Rates, headlines, policy, and high-signal public events with real consequence.</p>
-                <div class="cluster-list">
-                  <span>policy and election timing</span>
-                  <span>economic headline sentiment</span>
-                  <span>global event outcome lanes</span>
-                </div>
+                <p>Rates, policy, elections, and public events where timing and consensus both matter.</p>
+                <div class="cluster-list"><span>policy and election timing</span><span>economic headline sentiment</span><span>global event outcome lanes</span></div>
               </article>
 
               <article class="cluster">
-                <div class="cluster-top">
-                  <span class="cluster-icon">❋</span>
-                  <span class="cluster-status">wildcard bloom</span>
-                </div>
+                <div class="cluster-top"><span class="cluster-icon">❋</span><span class="cluster-status">frontier bloom</span></div>
                 <h3>Frontier</h3>
-                <p>AI, science, tech, and strange edge cases that feel obvious only after they happen.</p>
-                <div class="cluster-list">
-                  <span>frontier model release timing</span>
-                  <span>consumer tech moments</span>
-                  <span>breakout experimental markets</span>
-                </div>
+                <p>AI, science, and emerging tech questions that reward early pattern recognition.</p>
+                <div class="cluster-list"><span>frontier model release timing</span><span>consumer tech inflection points</span><span>experimental markets with real pull</span></div>
               </article>
             </div>
           </section>
@@ -744,91 +807,248 @@ const page = `<!doctype html>
 
         <aside class="side">
           <section class="panel" id="thesis">
-            <p class="eyebrow">Brand thesis</p>
-            <h2>Prediction design without exchange-terminal ugliness.</h2>
-            <p>
-              flower should feel premium, not sterile. The visual system stays soft and inviting
-              while the product language stays clear: what is the question, where is conviction,
-              and how fast can I act?
-            </p>
+            <p class="eyebrow">Product thesis</p>
+            <h2>Forecasting without the terminal aesthetic.</h2>
+            <p>flower should feel premium, social, and immediate. The product language stays simple: what is happening, where is conviction moving, and what deserves your attention right now?</p>
             <div class="panel-grid">
-              <article class="panel-tile">
-                <h3>Readable first</h3>
-                <p>Cards, categories, and probabilities should scan in seconds on a phone.</p>
-              </article>
-              <article class="panel-tile">
-                <h3>Identity-friendly</h3>
-                <p>Google and X sign-in create an easy first touch before wallet complexity shows up.</p>
-              </article>
-              <article class="panel-tile">
-                <h3>Built to bloom</h3>
-                <p>Start with category shells and onboarding now, then layer live market rails later.</p>
-              </article>
+              <article class="panel-tile"><h3>Readable first</h3><p>Questions, probabilities, and movement cues should scan in seconds on a phone.</p></article>
+              <article class="panel-tile"><h3>Confidence over noise</h3><p>Strong hierarchy keeps the important signal visible even when the underlying market is chaotic.</p></article>
+              <article class="panel-tile"><h3>Account-first onboarding</h3><p>Familiar identity rails make entry feel instant instead of technical.</p></article>
             </div>
           </section>
 
           <section class="onboard-card" id="access">
-            <p class="eyebrow">Access flow</p>
-            <h2>Privy-style onboarding, no wallet anxiety.</h2>
-            <p class="auth-copy">
-              The primary action is identity-first. Users enter through familiar accounts, then the
-              app can connect wallet logic quietly behind the scenes.
-            </p>
+            <div class="auth-status-row">
+              <div>
+                <p class="eyebrow">Access flow</p>
+                <h2>Get in fast, then stay in rhythm.</h2>
+              </div>
+              <div class="auth-state-pill"><span class="auth-state-dot pending" id="authStateDot" aria-hidden="true"></span><span id="authStateLabel">Connecting sign-in</span></div>
+            </div>
+            <p class="auth-copy">Start with Google or X, land inside the product immediately, and let your profile, watchlists, and activity travel with you across every world.</p>
             <div class="auth-row">
-              <a class="auth-button" href="#access">
-                <span class="button-icon">G</span>
-                <span>Continue with Google</span>
-              </a>
-              <a class="ghost-button" href="#access">
-                <span class="button-icon">X</span>
-                <span>Continue with X</span>
-              </a>
+              <button class="auth-button" id="loginGoogle" type="button"><span class="button-icon">G</span><span>Continue with Google</span></button>
+              <button class="ghost-button" id="loginTwitter" type="button"><span class="button-icon">X</span><span>Continue with X</span></button>
             </div>
+            <p class="auth-feedback" id="authFeedback">Opening a clean account-first sign-in flow.</p>
             <div class="steps">
-              <div class="step">
-                <span class="step-number">1</span>
-                <div>
-                  <strong>Pick an identity</strong>
-                  <span class="subtle">Google or X gives the fastest first-touch login path.</span>
-                </div>
-              </div>
-              <div class="step">
-                <span class="step-number">2</span>
-                <div>
-                  <strong>Land in category view</strong>
-                  <span class="subtle">Open directly into culture, crypto, macro, or frontier worlds.</span>
-                </div>
-              </div>
-              <div class="step">
-                <span class="step-number">3</span>
-                <div>
-                  <strong>Unlock market actions later</strong>
-                  <span class="subtle">When the backend is ready, pricing and order flow slide into the same shell.</span>
-                </div>
-              </div>
+              <div class="step"><span class="step-number">1</span><div><strong>Choose an account</strong><span class="subtle">A familiar sign-in gets people moving without friction.</span></div></div>
+              <div class="step"><span class="step-number">2</span><div><strong>Open into your world</strong><span class="subtle">Land directly in culture, crypto, macro, or frontier based on what you follow.</span></div></div>
+              <div class="step"><span class="step-number">3</span><div><strong>Track conviction daily</strong><span class="subtle">Watchlists, briefs, and market movement keep the product sticky between sessions.</span></div></div>
             </div>
-            <div class="panel-foot" style="margin-top: 18px;">
-              <span class="beta-pill">beta concept</span>
-              <span class="subtle">designed for live data later</span>
-            </div>
+            <section class="account-card" id="accountCard" hidden>
+              <div class="account-row">
+                <div>
+                  <p class="eyebrow">Account</p>
+                  <h3 id="accountTitle">Signed in</h3>
+                </div>
+                <button class="logout-button" id="logoutButton" type="button">Log out</button>
+              </div>
+              <p id="accountCopy">Your flower account is live on this device.</p>
+              <p class="account-meta" id="accountMeta"></p>
+            </section>
+            <div class="panel-foot" style="margin-top: 18px;"><span class="beta-pill">live auth path</span><span class="subtle">session restores automatically on return</span></div>
           </section>
         </aside>
       </div>
 
-      <footer class="footer">
-        flower is a brand shell for a prediction market product. Live market data and execution rails can be added later without changing the design language.
-      </footer>
+      <section class="dock">
+        <p class="eyebrow">Daily product loop</p>
+        <h2>Open flower. Read the day. Act with context.</h2>
+        <p>The product should feel useful before a user makes a single move. Morning brief, clean world selection, confidence cues, and a fast return path make the app feel like a habit instead of a novelty.</p>
+        <div class="dock-actions">
+          <a class="hero-button primary" href="#access">Join flower</a>
+          <a class="hero-button secondary" href="#thesis">See the thesis</a>
+        </div>
+      </section>
+
+      <footer class="footer">flower is a consumer forecasting product built around readable mobile flows, strong category identity, and fast conviction tracking.</footer>
     </main>
+
+    <script>
+      window.__FLOWER_PRIVY__ = {
+        appId: "${escapeForScript(appId)}",
+        clientId: "${escapeForScript(clientId)}"
+      };
+    </script>
+    <script type="module">
+      import Privy, {LocalStorage} from "https://esm.sh/@privy-io/js-sdk-core@latest";
+
+      const config = window.__FLOWER_PRIVY__ || {};
+      const loginGoogleButton = document.getElementById("loginGoogle");
+      const loginTwitterButton = document.getElementById("loginTwitter");
+      const logoutButton = document.getElementById("logoutButton");
+      const authFeedback = document.getElementById("authFeedback");
+      const authStateDot = document.getElementById("authStateDot");
+      const authStateLabel = document.getElementById("authStateLabel");
+      const accountCard = document.getElementById("accountCard");
+      const accountTitle = document.getElementById("accountTitle");
+      const accountCopy = document.getElementById("accountCopy");
+      const accountMeta = document.getElementById("accountMeta");
+
+      const buttons = [loginGoogleButton, loginTwitterButton, logoutButton];
+
+      function setButtonsDisabled(disabled) {
+        for (const button of buttons) {
+          if (button) button.disabled = disabled;
+        }
+      }
+
+      function setStatus(state, label, feedback) {
+        authStateDot.classList.remove("pending", "error");
+        if (state === "pending") authStateDot.classList.add("pending");
+        if (state === "error") authStateDot.classList.add("error");
+        authStateLabel.textContent = label;
+        authFeedback.textContent = feedback;
+      }
+
+      function getReturnUrl() {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("privy_oauth_code");
+        url.searchParams.delete("privy_oauth_state");
+        return \`\${url.origin}\${url.pathname}\`;
+      }
+
+      function shortenId(value) {
+        if (!value || value.length < 13) return value || "";
+        return \`\${value.slice(0, 6)}...\${value.slice(-4)}\`;
+      }
+
+      function deriveIdentity(user) {
+        const accounts = Array.isArray(user?.linkedAccounts) ? user.linkedAccounts : [];
+        const google = accounts.find((account) => account?.type === "google_oauth");
+        const twitter = accounts.find((account) => account?.type === "twitter_oauth");
+        const email = accounts.find((account) => account?.type === "email");
+        return {
+          headline:
+            google?.email ||
+            twitter?.username ||
+            twitter?.name ||
+            email?.address ||
+            "Signed in",
+          detail:
+            google ? "Google account connected" :
+            twitter ? "X account connected" :
+            email ? "Email account connected" :
+            "Session active on this device"
+        };
+      }
+
+      function renderSignedOut() {
+        accountCard.hidden = true;
+        logoutButton.disabled = true;
+      }
+
+      function renderSignedIn(user) {
+        const identity = deriveIdentity(user);
+        accountCard.hidden = false;
+        logoutButton.disabled = false;
+        accountTitle.textContent = identity.headline;
+        accountCopy.textContent = "Your flower account is active and ready to follow live conviction across the app.";
+        accountMeta.textContent = \`\${identity.detail} • user \${shortenId(user?.id)}\`;
+      }
+
+      async function bootstrap() {
+        if (!config.appId || !config.clientId) {
+          setButtonsDisabled(true);
+          setStatus(
+            "pending",
+            "Access opening soon",
+            "Sign-in is being finalized for this build."
+          );
+          renderSignedOut();
+          return;
+        }
+
+        const privy = new Privy({
+          appId: config.appId,
+          clientId: config.clientId,
+          storage: new LocalStorage()
+        });
+
+        setButtonsDisabled(true);
+        setStatus("pending", "Starting sign-in", "Checking for an existing session.");
+
+        try {
+          await privy.initialize();
+
+          const params = new URLSearchParams(window.location.search);
+          const oauthCode = params.get("privy_oauth_code");
+          const oauthState = params.get("privy_oauth_state");
+
+          if (oauthCode && oauthState) {
+            setStatus("pending", "Finishing sign-in", "Completing your return from the provider.");
+            await privy.auth.oauth.loginWithCode(oauthCode, oauthState);
+            window.history.replaceState({}, "", getReturnUrl());
+          }
+
+          const {user} = await privy.user.get();
+          if (user) {
+            renderSignedIn(user);
+            setStatus("ready", "Signed in", "Your session is live and will restore automatically when you come back.");
+          } else {
+            renderSignedOut();
+            setStatus("ready", "Ready to sign in", "Choose Google or X to open your account.");
+          }
+
+          loginGoogleButton.addEventListener("click", async () => {
+            setButtonsDisabled(true);
+            setStatus("pending", "Redirecting", "Opening Google sign-in.");
+            const oauthURL = await privy.auth.oauth.generateURL("google", getReturnUrl());
+            window.location.assign(oauthURL);
+          });
+
+          loginTwitterButton.addEventListener("click", async () => {
+            setButtonsDisabled(true);
+            setStatus("pending", "Redirecting", "Opening X sign-in.");
+            const oauthURL = await privy.auth.oauth.generateURL("twitter", getReturnUrl());
+            window.location.assign(oauthURL);
+          });
+
+          logoutButton.addEventListener("click", async () => {
+            setButtonsDisabled(true);
+            setStatus("pending", "Signing out", "Closing your session on this device.");
+            await privy.logout();
+            renderSignedOut();
+            setStatus("ready", "Signed out", "Choose Google or X to sign back in.");
+            setButtonsDisabled(false);
+            logoutButton.disabled = true;
+          });
+
+          setButtonsDisabled(false);
+          if (!accountCard.hidden) {
+            logoutButton.disabled = false;
+          }
+        } catch (error) {
+          console.error("Privy bootstrap failed", error);
+          renderSignedOut();
+          setButtonsDisabled(false);
+          logoutButton.disabled = true;
+          setStatus(
+            "error",
+            "Sign-in unavailable",
+            "We hit an authentication setup issue. Try again in a moment."
+          );
+        }
+      }
+
+      bootstrap();
+    </script>
   </body>
 </html>`;
 
 export default {
-  async fetch() {
+  async fetch(request, env) {
+    const page = renderPage({
+      appId: env.FLOWER_PRIVY_APP_ID,
+      clientId: env.FLOWER_PRIVY_CLIENT_ID
+    });
+
     return new Response(page, {
       headers: {
         "content-type": "text/html; charset=utf-8",
-        "cache-control": "public, max-age=300",
-      },
+        "cache-control": "public, max-age=300"
+      }
     });
-  },
+  }
 };
