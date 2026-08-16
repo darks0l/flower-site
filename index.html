@@ -468,6 +468,77 @@
         margin-top: 18px;
       }
 
+      .snapshot-grid {
+        display: grid;
+        grid-template-columns: 0.94fr 1.06fr;
+        gap: 14px;
+      }
+
+      .snapshot-card {
+        padding: 20px;
+        border-radius: 28px;
+        background: rgba(255,255,255,0.035);
+        border: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .snapshot-head,
+      .standing-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .snapshot-stamp {
+        min-height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .snapshot-card h3 {
+        margin: 0;
+        font-size: 1.35rem;
+        letter-spacing: -0.04em;
+      }
+
+      .game-stack,
+      .standing-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .game-row,
+      .standing-row {
+        padding: 14px 16px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .game-row strong,
+      .standing-row strong {
+        display: block;
+        font-size: 0.96rem;
+        letter-spacing: -0.02em;
+      }
+
+      .game-row span,
+      .standing-row span {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .standing-row em {
+        color: var(--teal);
+        font-style: normal;
+        font-weight: 700;
+      }
+
       .app-grid {
         display: grid;
         grid-template-columns: 1.05fr 0.95fr;
@@ -847,7 +918,8 @@
         .hero-grid,
         .cluster-grid,
         .side,
-        .app-grid {
+        .app-grid,
+        .snapshot-grid {
           grid-template-columns: 1fr;
         }
 
@@ -869,12 +941,14 @@
         .panel-foot,
         .auth-status-row,
         .account-row,
+        .snapshot-head,
         .screen-head,
         .detail-top,
         .slip-head,
         .market-line,
         .slip-row,
-        .price-row {
+        .price-row,
+        .standing-row {
           flex-direction: column;
           align-items: flex-start;
         }
@@ -909,7 +983,7 @@
           <article class="hero" id="top">
             <div class="browser-pill">forecasting, redesigned for phones</div>
             <h1>Read the signal before consensus hardens.</h1>
-            <p>flower turns American sports markets into a calm, legible product. Instead of noisy betting-style screens, the experience centers on league hubs, clear matchup pages, and market detail views that feel natural on mobile.</p>
+            <p>flower turns American sports markets into a calm, legible product. Instead of noisy betting-style screens, the experience centers on league hubs, real slate context, clear matchup pages, and market detail views that feel natural on mobile.</p>
             <div class="hero-actions">
               <a class="hero-button primary" href="#access">Open your account</a>
               <a class="hero-button secondary" href="#worlds">Explore the worlds</a>
@@ -972,10 +1046,54 @@
             </div>
           </section>
 
+          <section class="section" id="live-data">
+            <div class="section-head">
+              <h2>Real data now</h2>
+              <div class="chip-row"><span class="mini-chip">Sunday, August 16, 2026</span><span class="mini-chip">official MLB snapshot</span><span class="mini-chip">GitHub Pages build</span></div>
+            </div>
+
+            <div class="snapshot-grid">
+              <article class="snapshot-card">
+                <div class="snapshot-head">
+                  <div>
+                    <p class="eyebrow">Today’s slate</p>
+                    <h3>Live MLB board</h3>
+                  </div>
+                  <span class="snapshot-stamp">15 games today</span>
+                </div>
+                <div class="game-stack">
+                  <div class="game-row"><strong>Orioles at Rays</strong><span>12:15 PM ET</span></div>
+                  <div class="game-row"><strong>Yankees at Blue Jays</strong><span>1:37 PM ET</span></div>
+                  <div class="game-row"><strong>Cardinals at Cubs</strong><span>3:15 PM ET</span></div>
+                  <div class="game-row"><strong>Brewers at Dodgers</strong><span>4:10 PM ET</span></div>
+                  <div class="game-row"><strong>Mariners at Astros</strong><span>7:20 PM ET</span></div>
+                </div>
+              </article>
+
+              <article class="snapshot-card">
+                <div class="snapshot-head">
+                  <div>
+                    <p class="eyebrow">Standings pulse</p>
+                    <h3>Current division leaders</h3>
+                  </div>
+                  <span class="snapshot-stamp">As of August 16</span>
+                </div>
+                <div class="standing-list">
+                  <div class="standing-row"><div><strong>Tampa Bay Rays</strong><span>AL East</span></div><em>74-47</em></div>
+                  <div class="standing-row"><div><strong>Chicago White Sox</strong><span>AL Central</span></div><em>64-58</em></div>
+                  <div class="standing-row"><div><strong>Houston Astros</strong><span>AL West</span></div><em>63-60</em></div>
+                  <div class="standing-row"><div><strong>Atlanta Braves</strong><span>NL East</span></div><em>73-49</em></div>
+                  <div class="standing-row"><div><strong>Milwaukee Brewers</strong><span>NL Central</span></div><em>75-48</em></div>
+                  <div class="standing-row"><div><strong>Los Angeles Dodgers</strong><span>NL West</span></div><em>74-49</em></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
           <section class="section app-shell" id="markets">
             <div class="section-head">
               <h2>Inside the app</h2>
-              <div class="chip-row"><span class="mini-chip">league hubs</span><span class="mini-chip">market pages</span><span class="mini-chip">watchlists and slips</span></div>
+              <div class="chip-row"><span class="mini-chip">league hubs</span><span class="mini-chip">market pages</span><span class="mini-chip">watchlists, portfolio, live state</span></div>
             </div>
 
             <div class="app-grid">
@@ -1041,7 +1159,7 @@
                     </div>
                     <span class="slip-tag">2 saved</span>
                   </div>
-                  <p>The app should support a real daily loop: save a matchup, follow movement, and keep pending positions in one calm place.</p>
+                  <p>The app should support a real daily loop: save a matchup, follow movement, track open positions, and keep pending actions in one calm place.</p>
                   <div class="slip-list">
                     <div class="slip-row">
                       <div>
@@ -1056,6 +1174,33 @@
                         <p>Lakers at Suns</p>
                       </div>
                       <span>48%</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="market-panel">
+                  <div class="slip-head">
+                    <div>
+                      <p class="eyebrow">Live state</p>
+                      <h3 class="screen-title">Radar and portfolio pulse</h3>
+                    </div>
+                    <span class="slip-tag">3 alerts</span>
+                  </div>
+                  <p>The product should keep a user oriented while games are moving: what's live, what changed, and which positions need attention right now.</p>
+                  <div class="slip-list">
+                    <div class="slip-row">
+                      <div>
+                        <h4>Brewers at Dodgers total</h4>
+                        <p>Run total moved from 8.0 to 8.5</p>
+                      </div>
+                      <span>Live</span>
+                    </div>
+                    <div class="slip-row">
+                      <div>
+                        <h4>Saved position exposure</h4>
+                        <p>4 open sports markets across MLB and NFL</p>
+                      </div>
+                      <span>+$126</span>
                     </div>
                   </div>
                 </article>
